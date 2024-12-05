@@ -21,7 +21,7 @@ def entity_relationship(onto_dict,id_entity,depth = 0, known_relationship = None
 
     # Look for depth relationship with recursive fonction
     for parents_id in entity['parents'] :
-        relationships.update(entity_relationship(onto_dict,parents_id,depth + 1))
+        relationships.update(entity_relationship(onto_dict,parents_id,depth + 1,known_relationship))
 
     return relationships
 
