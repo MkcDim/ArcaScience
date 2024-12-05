@@ -6,11 +6,14 @@ def entity_relationship(onto_dict,id_entity,depth = 0):
 
     entity = onto_dict.get(id_entity)
 
+    if not entity : 
+        return {}
+
     relationships = {entity['label'] : depth} #dictionnary of each relationship between label and depth of relation ships
 
     # Look for depth relationship with recursive fonction
     for parents_id in entity['parents'] :
-        relationships.update(entity_relationship(onto_dict,parents_id,depth =+ 1))
+        relationships.update(entity_relationship(onto_dict,parents_id,depth + 1))
 
     return relationships
 
@@ -38,3 +41,4 @@ onto_dict = {
 
 example_of_entity = 'http://entity/CST/HYPOCHLOREM'
 relationship = entity_relationship(onto_dict,example_of_entity)
+print(relationship)
