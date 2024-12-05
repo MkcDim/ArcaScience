@@ -2,30 +2,18 @@ import pandas as pd
 import os
 import argparse
 from operator import itemgetter
+import networkx as nx
+import matplotlib.pyplot as plt
 
 # Function to find each relationship, and the depth of each relationship.
-def entity_relationship(onto_dict,id_entity,depth = 0, known_relationship = None):
+def entity_relationship(onto_dict,id_entity):
 
+    relationships = {} #dictionnary of each relationship between label and depth of relation ships
 
-    # Verification if relationship already did to save time and don't fall into loop
-    if known_relationship is None :
-        known_relationship = []
-    elif id_entity in known_relationship : 
-        return {}
+    # # Look for shortest path lengths from source to all relation
+    #for parents_id in  :
 
-    known_relationship.append(id_entity)    
-    entity = onto_dict.get(id_entity)
-
-    if not entity : 
-        return {}
-
-    relationships = {entity['label'] : depth} #dictionnary of each relationship between label and depth of relation ships
-
-    # Look for depth relationship with recursive fonction
-    for parents_id in entity['parents'] :
-        relationships.update(entity_relationship(onto_dict,parents_id,depth + 1,known_relationship))
-
-    return relationships
+    # return relationships
 
 
 
@@ -44,22 +32,29 @@ def main() :
     
     onto_df.drop_duplicates(inplace=True)
     onto_df['Parents'] = onto_df['Parents'].fillna("") # Replaces NaN values in the Parents column with “” to prepare for the eventual separation of the parents
+
+    onto_graph = nx.DiGraph()
+
     onto_df['Parents'] = onto_df['Parents'].apply(lambda x: x.split('|') if x else []) # Split Parents separated by "|" to get a table of parents for each Class ID
 
     # Build dictionnary of onto_df : 
-    onto_dict = {
-        row['Class ID']: {"label":row["Preferred Label"], "parents" : row["Parents"]}
-        for index, row in onto_df.iterrows()
-    } 
 
+    for index , row in onto_df.iterrows() :
+        label = row["Preferred Label"]
+        parents = row["Parents"]
+        for parent in parents : 
+            onto_graph.add_edge(label,parent)
+       
+    nx.draw(onto_graph)
+    plt.savefig("onto_graph.png")
 
-    if args.id not in onto_dict :
+    if args.id not in onto_df['Preferred Label'] :
         print(f"ERROR : id {args.id} doesn't exist in this csv file")
         return
 
 
     # The dictionary creates a key/value link between Class IDs and their labels and Parents, which will facilitate work on loops and data comparison queries
-    relationship = entity_relationship(onto_dict,args.id)
+    relationship = entity_relationship(onto_graph,args.id)
     sorted_relationships = dict(sorted(relationship.items(),key=itemgetter(1),reverse = True))
     print(sorted_relationships)
 
