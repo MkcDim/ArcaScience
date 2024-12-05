@@ -2,8 +2,15 @@ import pandas as pd
 import os
 
 # Function to find each relationship, and the depth of each relationship.
-def entity_relationship(onto_dict,id_entity,depth = 0):
+def entity_relationship(onto_dict,id_entity,depth = 0, known_relationship = None):
 
+
+    # Verification if relationship already did to save time and don't fall into loop
+    if known_relationship is None :
+        known_relationship = []
+    elif id_entity in known_relationship : 
+        return {}
+    
     entity = onto_dict.get(id_entity)
 
     if not entity : 
