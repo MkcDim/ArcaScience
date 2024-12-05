@@ -10,7 +10,8 @@ def entity_relationship(onto_dict,id_entity,depth = 0, known_relationship = None
         known_relationship = []
     elif id_entity in known_relationship : 
         return {}
-    
+
+    known_relationship.append(id_entity)    
     entity = onto_dict.get(id_entity)
 
     if not entity : 
