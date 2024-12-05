@@ -33,7 +33,7 @@ def main() :
 
     parser = argparse.ArgumentParser(description = "Onto-X Project")
     parser.add_argument("--csv",type=str,default=r"data\\onto_x.csv",help = "Path to Onto-X Project CSV file. Default: onto_x.csv")
-    parser.add_argument("--id",type=str,default='http://entity/CST/GYNCERV',help="ID of the entity we want its relationships")
+    parser.add_argument("--id",type=str,default='http://entity/CST/CERVIX%20DIS',help="ID of the entity we want its relationships")
     args = parser.parse_args()
 
     try :
